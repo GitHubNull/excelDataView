@@ -6,7 +6,7 @@
 
     <groupId>org.oxff</groupId>
     <artifactId>excelDataView</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -37,6 +37,13 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
         <plugins>
             <!-- Maven Assembly Plugin for creating fat JAR -->
             <plugin>
@@ -72,6 +79,16 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                </configuration>
+            </plugin>
+            
+            <!-- Maven Resources Plugin for filtering -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

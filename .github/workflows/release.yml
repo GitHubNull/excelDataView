@@ -9,6 +9,8 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
@@ -45,6 +47,20 @@ jobs:
       run: |
         mvn clean package -DskipTests
         
+    - name: Check build artifacts
+      run: |
+        echo "检查构建产物..."
+        ls -la target/
+        if [ ! -f "target/excelDataView-${{ env.RELEASE_VERSION }}.jar" ]; then
+          echo "❌ 基础JAR文件不存在"
+          exit 1
+        fi
+        if [ ! -f "target/excelDataView-${{ env.RELEASE_VERSION }}-jar-with-dependencies.jar" ]; then
+          echo "❌ 包含依赖的JAR文件不存在"
+          exit 1
+        fi
+        echo "✅ 构建产物检查通过"
+        
     - name: Create Release Notes
       id: release-notes
       run: |
@@ -75,6 +91,7 @@ jobs:
         - 使用Burp Suite统一的日志系统
         - 增强了错误处理和调试信息
         - 支持模块化设计
+        - 添加完整的项目文档和开源协议
         
         ### 技术架构
         - Java 17 + Maven
@@ -86,6 +103,14 @@ jobs:
         
         *此版本由GitHub Actions自动构建发布*
         EOF
+        
+    - name: Debug GitHub Token
+      run: |
+        echo "GitHub Token 权限检查..."
+        echo "Repository: ${{ github.repository }}"
+        echo "Ref: ${{ github.ref }}"
+        echo "Ref Name: ${{ github.ref_name }}"
+        echo "Actor: ${{ github.actor }}"
         
     - name: Create Release
       id: create-release
@@ -99,8 +124,20 @@ jobs:
           target/excelDataView-${{ env.RELEASE_VERSION }}-jar-with-dependencies.jar
         draft: false
         prerelease: false
+        fail_on_unmatched_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Release Status
+      if: always()
+      run: |
+        if [ "${{ steps.create-release.outcome }}" = "success" ]; then
+          echo "✅ Release 创建成功"
+          echo "Release URL: ${{ steps.create-release.outputs.url }}"
+        else
+          echo "❌ Release 创建失败"
+          echo "请检查权限配置和网络连接"
+        fi
         
     - name: Commit version changes
       if: success()

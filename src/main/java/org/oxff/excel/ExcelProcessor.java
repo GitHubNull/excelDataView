@@ -28,6 +28,13 @@ public class ExcelProcessor {
      * 检查响应是否为Excel格式
      */
     public static boolean isExcelResponse(byte[] response) {
+        return isExcelResponse(response, null);
+    }
+    
+    /**
+     * 检查响应是否为Excel格式（带日志支持）
+     */
+    public static boolean isExcelResponse(byte[] response, burp.IBurpExtenderCallbacks callbacks) {
         if (response == null || response.length < 4) {
             return false;
         }
@@ -35,7 +42,7 @@ public class ExcelProcessor {
         // 检查是否为HTTP响应
         byte[] actualData = response;
         if (isHttpResponse(response)) {
-            actualData = extractResponseBody(response);
+            actualData = extractResponseBody(response, callbacks);
         }
         
         if (actualData == null || actualData.length < 4) {
@@ -52,7 +59,9 @@ public class ExcelProcessor {
         if (contentType != null) {
             for (String excelType : EXCEL_CONTENT_TYPES) {
                 if (contentType.toLowerCase().contains(excelType.toLowerCase())) {
-                    System.out.println("ExcelProcessor: 通过Content-Type检测到Excel格式: " + contentType);
+                    if (callbacks != null) {
+                        callbacks.printOutput("ExcelProcessor: 通过Content-Type检测到Excel格式: " + contentType);
+                    }
                     return true;
                 }
             }
@@ -62,7 +71,9 @@ public class ExcelProcessor {
         String hexDump = String.format("%02X %02X %02X %02X", 
             actualData[0] & 0xFF, actualData[1] & 0xFF, 
             actualData[2] & 0xFF, actualData[3] & 0xFF);
-        System.out.println("ExcelProcessor: 未检测到Excel格式，数据头部: " + hexDump);
+        if (callbacks != null) {
+            callbacks.printOutput("ExcelProcessor: 未检测到Excel格式，数据头部: " + hexDump);
+        }
         
         return false;
     }
@@ -71,46 +82,67 @@ public class ExcelProcessor {
      * 处理Excel数据
      */
     public static Map<String, List<List<String>>> processExcelData(byte[] excelData) throws IOException {
+        return processExcelData(excelData, null);
+    }
+    
+    /**
+     * 处理Excel数据（带日志支持）
+     */
+    public static Map<String, List<List<String>>> processExcelData(byte[] excelData, burp.IBurpExtenderCallbacks callbacks) throws IOException {
         Map<String, List<List<String>>> result = new LinkedHashMap<>();
         
         if (excelData == null || excelData.length < 4) {
-            System.out.println("ExcelProcessor: 数据为空或太小，数据长度=" + (excelData != null ? excelData.length : 0));
+            if (callbacks != null) {
+                callbacks.printOutput("ExcelProcessor: 数据为空或太小，数据长度=" + (excelData != null ? excelData.length : 0));
+            }
             return result;
         }
         
         // 检查是否为HTTP响应
         byte[] actualData = excelData;
         if (isHttpResponse(excelData)) {
-            System.out.println("ExcelProcessor: 检测到HTTP响应，提取响应体");
-            actualData = extractResponseBody(excelData);
+            if (callbacks != null) {
+                callbacks.printOutput("ExcelProcessor: 检测到HTTP响应，提取响应体");
+            }
+            actualData = extractResponseBody(excelData, callbacks);
         }
         
         if (actualData == null || actualData.length < 4) {
-            System.out.println("ExcelProcessor: 提取后的数据为空或太小，数据长度=" + (actualData != null ? actualData.length : 0));
+            if (callbacks != null) {
+                callbacks.printOutput("ExcelProcessor: 提取后的数据为空或太小，数据长度=" + (actualData != null ? actualData.length : 0));
+            }
             return result;
         }
         
         // 调试信息
-        System.out.println("ExcelProcessor: 开始处理Excel数据，数据长度=" + actualData.length);
-        String hexDump = String.format("%02X %02X %02X %02X",
-                actualData[0] & 0xFF, actualData[1] & 0xFF,
-                actualData[2] & 0xFF, actualData[3] & 0xFF);
-        System.out.println("ExcelProcessor: 数据头部 (hex): " + hexDump);
+        if (callbacks != null) {
+            callbacks.printOutput("ExcelProcessor: 开始处理Excel数据，数据长度=" + actualData.length);
+            String hexDump = String.format("%02X %02X %02X %02X",
+                    actualData[0] & 0xFF, actualData[1] & 0xFF,
+                    actualData[2] & 0xFF, actualData[3] & 0xFF);
+            callbacks.printOutput("ExcelProcessor: 数据头部 (hex): " + hexDump);
+        }
 
         Workbook workbook = null;
         try (ByteArrayInputStream bis = new ByteArrayInputStream(actualData)) {
             if (isXLSXHeader(actualData)) {
-                System.out.println("ExcelProcessor: 检测到XLSX格式");
+                if (callbacks != null) {
+                    callbacks.printOutput("ExcelProcessor: 检测到XLSX格式");
+                }
                 workbook = new XSSFWorkbook(bis);
             } else if (isXLSHeader(actualData)) {
-                System.out.println("ExcelProcessor: 检测到XLS格式");
+                if (callbacks != null) {
+                    callbacks.printOutput("ExcelProcessor: 检测到XLS格式");
+                }
                 workbook = new HSSFWorkbook(bis);
             } else {
                 String errorMsg = "不支持的Excel格式。数据头部: " +
                         String.format("%02X %02X %02X %02X",
                                 actualData[0] & 0xFF, actualData[1] & 0xFF,
                                 actualData[2] & 0xFF, actualData[3] & 0xFF);
-                System.err.println("ExcelProcessor: " + errorMsg);
+                if (callbacks != null) {
+                    callbacks.printError("ExcelProcessor: " + errorMsg);
+                }
                 throw new IOException(errorMsg);
             }
             
@@ -304,6 +336,13 @@ public class ExcelProcessor {
      * 从HTTP响应中提取响应体
      */
     private static byte[] extractResponseBody(byte[] response) {
+        return extractResponseBody(response, null);
+    }
+    
+    /**
+     * 从HTTP响应中提取响应体（带日志支持）
+     */
+    private static byte[] extractResponseBody(byte[] response, burp.IBurpExtenderCallbacks callbacks) {
         try {
             // 查找header结束位置
             int headerEnd = -1;
@@ -317,7 +356,9 @@ public class ExcelProcessor {
             
             if (headerEnd == -1 || headerEnd >= response.length) {
                 // 没有找到HTTP头部，可能是直接的数据
-                System.out.println("ExcelProcessor: 未找到HTTP头部，假设为原始数据");
+                if (callbacks != null) {
+                    callbacks.printOutput("ExcelProcessor: 未找到HTTP头部，假设为原始数据");
+                }
                 return response;
             }
             
@@ -325,11 +366,15 @@ public class ExcelProcessor {
             byte[] body = new byte[response.length - headerEnd];
             System.arraycopy(response, headerEnd, body, 0, body.length);
             
-            System.out.println("ExcelProcessor: 提取响应体，头部大小=" + headerEnd + "，响应体大小=" + body.length);
+            if (callbacks != null) {
+                callbacks.printOutput("ExcelProcessor: 提取响应体，头部大小=" + headerEnd + "，响应体大小=" + body.length);
+            }
             return body;
             
         } catch (Exception e) {
-            System.err.println("ExcelProcessor: 提取响应体时出错: " + e.getMessage());
+            if (callbacks != null) {
+                callbacks.printError("ExcelProcessor: 提取响应体时出错: " + e.getMessage());
+            }
             return response; // 出错时返回原始数据
         }
     }

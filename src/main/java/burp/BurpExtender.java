@@ -12,6 +12,6 @@ public class BurpExtender implements IBurpExtender {
         // 注册自定义tab工厂
         callbacks.registerMessageEditorTabFactory(new ExcelTabFactory(callbacks));
         
-        System.out.println("Excel Data View 插件加载完成");
+        callbacks.printOutput("Excel Data View 插件加载完成");
     }
 }

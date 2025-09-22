@@ -65,7 +65,7 @@ public class ExcelViewerTab implements IMessageEditorTab {
             return false;
         }
         
-        return ExcelProcessor.isExcelResponse(message);
+        return ExcelProcessor.isExcelResponse(message, callbacks);
     }
     
     @Override
@@ -98,7 +98,7 @@ public class ExcelViewerTab implements IMessageEditorTab {
         new SwingWorker<Map<String, List<List<String>>>, Void>() {
             @Override
             protected Map<String, List<List<String>>> doInBackground() throws Exception {
-                return ExcelProcessor.processExcelData(currentMessage);
+                return ExcelProcessor.processExcelData(currentMessage, callbacks);
             }
             
             @Override
@@ -107,7 +107,7 @@ public class ExcelViewerTab implements IMessageEditorTab {
                     Map<String, List<List<String>>> excelData = get();
                     updateUIWithExcelData(excelData);
                 } catch (Exception e) {
-                    System.err.println("处理Excel数据时出错: " + e.getMessage());
+                    callbacks.printError("处理Excel数据时出错: " + e.getMessage());
                     showErrorMessage("处理Excel数据时出错: " + e.getMessage());
                 }
             }
@@ -142,10 +142,10 @@ public class ExcelViewerTab implements IMessageEditorTab {
             mainPanel.revalidate();
             mainPanel.repaint();
             
-            System.out.println("成功解析Excel数据，包含 " + excelData.size() + " 个工作表");
+            callbacks.printOutput("成功解析Excel数据，包含 " + excelData.size() + " 个工作表");
             
         } catch (Exception e) {
-            System.err.println("更新UI时出错: " + e.getMessage());
+            callbacks.printError("更新UI时出错: " + e.getMessage());
             showErrorMessage("更新UI时出错: " + e.getMessage());
         }
     }
@@ -208,7 +208,7 @@ public class ExcelViewerTab implements IMessageEditorTab {
             return table;
             
         } catch (Exception e) {
-            System.err.println("创建表格时出错: " + e.getMessage());
+            callbacks.printError("创建表格时出错: " + e.getMessage());
             // 创建错误表格
             DefaultTableModel errorModel = new DefaultTableModel();
             errorModel.addColumn("错误");

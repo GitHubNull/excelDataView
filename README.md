@@ -4,8 +4,29 @@
 ![Maven](https://img.shields.io/badge/Maven-3.x-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Release](https://img.shields.io/github/v/release/GitHubNull/excelDataView)
+![Stars](https://img.shields.io/github/stars/GitHubNull/excelDataView?style=social)
 
 一个专为 Burp Suite 设计的 Excel 数据查看插件，能够自动检测和显示 HTTP 响应中的 Excel 文件内容。
+
+## 📈 项目增长
+
+<!-- Star History Chart -->
+<p align="center">
+  <a href="https://star-history.com/#GitHubNull/excelDataView&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=GitHubNull/excelDataView&type=Date&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=GitHubNull/excelDataView&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=GitHubNull/excelDataView&type=Date" />
+    </picture>
+  </a>
+</p>
+
+<!-- Quick Stats -->
+<div align="center">
+
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=GitHubNull&repo=excelDataView&show_icons=true&theme=radical&hide_border=true)
+
+</div>
 
 ## 🚀 功能特性
 
@@ -218,6 +239,33 @@ mvn clean install
 - [Apache POI](https://poi.apache.org/) - Java Excel 处理库
 - [Swing](https://docs.oracle.com/javase/tutorial/uiswing/) - Java GUI 工具包
 
+## 📊 详细统计
+
+### 项目活跃度
+<div align="center">
+
+![GitHub Stats](https://github-readme-stats.vercel.app/api/pin/?username=GitHubNull&repo=excelDataView&theme=radical)
+
+![Language Stats](https://github-readme-stats.vercel.app/api/top-langs/?username=GitHubNull&repo=excelDataView&layout=compact&theme=radical)
+
+</div>
+
+### 贡献者
+感谢所有为项目做出贡献的开发者！
+
+<div align="center">
+
+![Contributors](https://contrib.rocks/image?repo=GitHubNull/excelDataView)
+
+</div>
+
+## 📈 增长里程碑
+
+- **2025-09-22**: 项目初始化，第一个版本发布 (v1.0.0)
+- **2025-09-23**: 完善文档和 CI/CD 流程 (v1.1.1)
+- **目标**: 获得 100+ Stars
+- **目标**: 社区贡献者达到 10+ 人
+
 ## 📞 联系方式
 
 - **项目地址**：https://github.com/GitHubNull/excelDataView
@@ -230,6 +278,6 @@ mvn clean install
   
 **Excel Data View** - 让 Burp Suite 中的 Excel 数据查看变得简单！
 
-[⭐ Star this project](https://github.com/GitHubNull/excelDataView) | [🐛 Report an issue](https://github.com/GitHubNull/excelDataView/issues)
+[⭐ Star this project](https://github.com/GitHubNull/excelDataView) | [🐛 Report an issue](https://github.com/GitHubNull/excelDataView/issues) | [📊 查看统计](https://star-history.com/#GitHubNull/excelDataView&Date)
 
 </div>

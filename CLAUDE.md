@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **模块化设计**：采用模块化架构，易于扩展
 
 ### 版本信息
-- **当前版本**：1.1.3
+- **当前版本**：1.1.4
 - **Java 版本**：17+
 - **构建工具**：Maven 3.x
 - **许可证**：MIT
@@ -164,6 +164,9 @@ mvn site
 
 ### 功能增强
 - **2025-09-23**：添加开发者信息输出、版本显示和卸载提示功能
+
+### Bug修复
+- **2025-09-23**：修复Apache POI版本兼容性问题，统一POI库版本到5.4.0
 
 ### 构建插件
 - **maven-compiler-plugin:3.13.0** - Java 编译器

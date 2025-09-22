@@ -1,6 +1,7 @@
 package org.oxff.excel;
 
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -52,48 +53,112 @@ public class ExcelTableModel extends DefaultTableModel {
      * 初始化表格数据
      */
     private void initializeData() {
-        // 清空现有数据
-        setDataVector(new Vector<Vector<Object>>(), new Vector<Object>());
-        
-        if (excelData == null || excelData.isEmpty()) {
-            // 创建空数据时的默认行
-            Vector<Object> emptyRow = new Vector<>();
-            emptyRow.add("");
-            for (int i = 0; i < dataColumnCount; i++) {
-                emptyRow.add("");
+        try {
+            // 清空现有数据
+            setDataVector(new Vector<Vector<Object>>(), new Vector<Object>());
+            
+            if (excelData == null || excelData.isEmpty()) {
+                // 创建空数据时的默认行
+                createEmptyDataRow();
+                return;
             }
-            addRow(emptyRow);
-            return;
-        }
-        
-        // 添加Excel数据行
-        for (int i = 0; i < excelData.size(); i++) {
-            List<String> rowData = excelData.get(i);
-            Vector<Object> rowVector = new Vector<>();
             
-            // 第一列是行号占位符
-            rowVector.add("");
+            // 验证和预处理数据
+            List<List<String>> validatedData = validateAndPreprocessData(excelData);
             
-            // 添加数据列
-            if (rowData != null) {
-                for (int j = 0; j < dataColumnCount; j++) {
-                    if (j < rowData.size() && rowData.get(j) != null) {
-                        // 处理中文编码
-                        String cellValue = ExcelProcessor.fixChineseEncoding(rowData.get(j));
-                        rowVector.add(cellValue);
-                    } else {
+            // 添加Excel数据行
+            for (int i = 0; i < validatedData.size(); i++) {
+                List<String> rowData = validatedData.get(i);
+                Vector<Object> rowVector = new Vector<>();
+                
+                // 第一列是行号占位符
+                rowVector.add("");
+                
+                // 添加数据列
+                if (rowData != null) {
+                    for (int j = 0; j < dataColumnCount; j++) {
+                        if (j < rowData.size() && rowData.get(j) != null) {
+                            // 处理中文编码
+                            String cellValue = ExcelProcessor.fixChineseEncoding(rowData.get(j));
+                            rowVector.add(cellValue);
+                        } else {
+                            rowVector.add("");
+                        }
+                    }
+                } else {
+                    // 空行
+                    for (int j = 0; j < dataColumnCount; j++) {
                         rowVector.add("");
                     }
                 }
-            } else {
-                // 空行
-                for (int j = 0; j < dataColumnCount; j++) {
-                    rowVector.add("");
-                }
+                
+                addRow(rowVector);
             }
-            
-            addRow(rowVector);
+        } catch (Exception e) {
+            // 如果初始化失败，创建错误行
+            createErrorDataRow("初始化数据失败: " + e.getMessage());
         }
+    }
+    
+    /**
+     * 创建空数据行
+     */
+    private void createEmptyDataRow() {
+        Vector<Object> emptyRow = new Vector<>();
+        emptyRow.add("");
+        for (int i = 0; i < dataColumnCount; i++) {
+            emptyRow.add("");
+        }
+        addRow(emptyRow);
+    }
+    
+    /**
+     * 创建错误数据行
+     * 
+     * @param errorMessage 错误信息
+     */
+    private void createErrorDataRow(String errorMessage) {
+        Vector<Object> errorRow = new Vector<>();
+        errorRow.add("");
+        errorRow.add(errorMessage);
+        for (int i = 1; i < dataColumnCount; i++) {
+            errorRow.add("");
+        }
+        addRow(errorRow);
+    }
+    
+    /**
+     * 验证和预处理数据
+     * 
+     * @param rawData 原始数据
+     * @return 验证后的数据
+     */
+    private List<List<String>> validateAndPreprocessData(List<List<String>> rawData) {
+        if (rawData == null || rawData.isEmpty()) {
+            return rawData;
+        }
+        
+        List<List<String>> processedData = new ArrayList<>();
+        
+        for (List<String> row : rawData) {
+            if (row == null) {
+                // 处理空行
+                List<String> emptyRow = new ArrayList<>();
+                for (int i = 0; i < dataColumnCount; i++) {
+                    emptyRow.add("");
+                }
+                processedData.add(emptyRow);
+            } else {
+                // 处理正常行，确保长度一致
+                List<String> processedRow = new ArrayList<>(row);
+                while (processedRow.size() < dataColumnCount) {
+                    processedRow.add("");
+                }
+                processedData.add(processedRow);
+            }
+        }
+        
+        return processedData;
     }
     
     @Override

@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class BurpExtender implements IBurpExtender, IExtensionStateListener {
     
-    private String version = "1.1.2"; // 默认版本号
+    private String version = "1.1.5"; // 默认版本号
     
     @Override
     public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {

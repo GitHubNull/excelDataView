@@ -151,68 +151,19 @@ public class ExcelViewerTab implements IMessageEditorTab {
     }
     
     private JTable createTableFromData(List<List<String>> data) {
-        if (data == null || data.isEmpty()) {
-            // 创建一个带有默认列的空表格，避免空模型导致的渲染问题
-            DefaultTableModel emptyModel = new DefaultTableModel();
-            emptyModel.addColumn("无数据");
-            emptyModel.addRow(new Object[]{"表格为空"});
-            JTable emptyTable = new JTable(emptyModel);
-            emptyTable.setEnabled(false);
-            return emptyTable;
-        }
-        
-        // 确定列数
-        int maxColumns = 0;
-        for (List<String> row : data) {
-            maxColumns = Math.max(maxColumns, row.size());
-        }
-        
         try {
-            // 创建表格模型
-            DefaultTableModel model = new DefaultTableModel();
+            // 创建Excel风格表格
+            ExcelTable excelTable = new ExcelTable(data, callbacks);
             
-            // 设置列名
-            for (int i = 0; i < maxColumns; i++) {
-                model.addColumn("列 " + (i + 1));
-            }
-            
-            // 添加数据行
-            for (List<String> rowData : data) {
-                if (rowData == null) continue;
-                
-                Object[] rowArray = new Object[maxColumns];
-                for (int i = 0; i < maxColumns; i++) {
-                    if (i < rowData.size()) {
-                        // 处理中文编码
-                        String cellValue = rowData.get(i);
-                        rowArray[i] = ExcelProcessor.fixChineseEncoding(cellValue != null ? cellValue : "");
-                    } else {
-                        rowArray[i] = "";
-                    }
-                }
-                model.addRow(rowArray);
-            }
-            
-            JTable table = new JTable(model);
-            
-            // 使用更安全的表格配置
-            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            table.setFillsViewportHeight(true);
-            table.setAutoCreateRowSorter(true);
-            table.setRowHeight(22);
-            
-            // 设置表格选择模式
-            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            table.setCellSelectionEnabled(false);
-            
-            return table;
+            callbacks.printOutput("成功创建Excel风格表格，包含 " + data.size() + " 行数据");
+            return excelTable;
             
         } catch (Exception e) {
-            callbacks.printError("创建表格时出错: " + e.getMessage());
+            callbacks.printError("创建Excel表格时出错: " + e.getMessage());
             // 创建错误表格
             DefaultTableModel errorModel = new DefaultTableModel();
             errorModel.addColumn("错误");
-            errorModel.addRow(new Object[]{"创建表格时出错: " + e.getMessage()});
+            errorModel.addRow(new Object[]{"创建Excel表格时出错: " + e.getMessage()});
             JTable errorTable = new JTable(errorModel);
             errorTable.setEnabled(false);
             return errorTable;

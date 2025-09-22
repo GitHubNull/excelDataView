@@ -7,7 +7,8 @@
       "Bash(mvn dependency:copy-dependencies:*)",
       "Bash(mvn package:*)",
       "Bash(mvn clean package:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(mvn dependency:analyze:*)"
     ],
     "deny": [],
     "ask": []

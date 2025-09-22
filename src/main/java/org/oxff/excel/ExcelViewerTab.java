@@ -12,21 +12,20 @@ import java.util.Map;
 import javax.swing.SwingWorker;
 import javax.swing.ListSelectionModel;
 
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class ExcelViewerTab implements IMessageEditorTab {
 
     private final IBurpExtenderCallbacks callbacks;
     private final IMessageEditorController controller;
-    private final boolean editable;
-    
+
     private JPanel mainPanel;
     private JTabbedPane sheetTabbedPane;
     private byte[] currentMessage;
     
-    public ExcelViewerTab(IBurpExtenderCallbacks callbacks, IMessageEditorController controller, boolean editable) {
+    public ExcelViewerTab(IBurpExtenderCallbacks callbacks, IMessageEditorController controller) {
         this.callbacks = callbacks;
         this.controller = controller;
-        this.editable = editable;
-        
+
         initializeUI();
     }
     
@@ -120,7 +119,7 @@ public class ExcelViewerTab implements IMessageEditorTab {
         mainPanel.removeAll();
         
         if (excelData == null || excelData.isEmpty()) {
-            showEmptyMessage("未找到有效的Excel数据");
+            showEmptyMessage();
             return;
         }
         
@@ -229,9 +228,9 @@ public class ExcelViewerTab implements IMessageEditorTab {
         mainPanel.repaint();
     }
     
-    private void showEmptyMessage(String message) {
+    private void showEmptyMessage() {
         mainPanel.removeAll();
-        JLabel label = new JLabel(message, SwingConstants.CENTER);
+        JLabel label = new JLabel("未找到有效的Excel数据", SwingConstants.CENTER);
         label.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.add(label, BorderLayout.CENTER);
         mainPanel.revalidate();

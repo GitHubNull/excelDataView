@@ -9,5 +9,11 @@
       <name>阿里云公共仓库</name>
       <url>https://maven.aliyun.com/repository/central</url>
     </mirror>
+    <mirror>
+      <id>aliyunmaven-public</id>
+      <mirrorOf>*</mirrorOf>
+      <name>阿里云公共仓库</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </mirror>
   </mirrors>
 </settings>

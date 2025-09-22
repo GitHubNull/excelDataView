@@ -5,6 +5,7 @@ import burp.IMessageEditorTab;
 import burp.IMessageEditorTabFactory;
 import burp.IMessageEditorController;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class ExcelTabFactory implements IMessageEditorTabFactory {
     
     private final IBurpExtenderCallbacks callbacks;
@@ -15,6 +16,6 @@ public class ExcelTabFactory implements IMessageEditorTabFactory {
     
     @Override
     public IMessageEditorTab createNewInstance(IMessageEditorController controller, boolean editable) {
-        return new ExcelViewerTab(callbacks, controller, editable);
+        return new ExcelViewerTab(callbacks, controller);
     }
 }

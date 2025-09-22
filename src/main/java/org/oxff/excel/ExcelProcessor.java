@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ExcelProcessor {
 
     // 常见的Excel文件MIME类型
@@ -91,13 +92,11 @@ public class ExcelProcessor {
         
         // 调试信息
         System.out.println("ExcelProcessor: 开始处理Excel数据，数据长度=" + actualData.length);
-        if (actualData.length >= 4) {
-            String hexDump = String.format("%02X %02X %02X %02X", 
-                actualData[0] & 0xFF, actualData[1] & 0xFF, 
+        String hexDump = String.format("%02X %02X %02X %02X",
+                actualData[0] & 0xFF, actualData[1] & 0xFF,
                 actualData[2] & 0xFF, actualData[3] & 0xFF);
-            System.out.println("ExcelProcessor: 数据头部 (hex): " + hexDump);
-        }
-        
+        System.out.println("ExcelProcessor: 数据头部 (hex): " + hexDump);
+
         Workbook workbook = null;
         try (ByteArrayInputStream bis = new ByteArrayInputStream(actualData)) {
             if (isXLSXHeader(actualData)) {
@@ -107,10 +106,10 @@ public class ExcelProcessor {
                 System.out.println("ExcelProcessor: 检测到XLS格式");
                 workbook = new HSSFWorkbook(bis);
             } else {
-                String errorMsg = "不支持的Excel格式。数据头部: " + 
-                    (actualData.length >= 4 ? String.format("%02X %02X %02X %02X", 
-                        actualData[0] & 0xFF, actualData[1] & 0xFF, 
-                        actualData[2] & 0xFF, actualData[3] & 0xFF) : "数据不足");
+                String errorMsg = "不支持的Excel格式。数据头部: " +
+                        String.format("%02X %02X %02X %02X",
+                                actualData[0] & 0xFF, actualData[1] & 0xFF,
+                                actualData[2] & 0xFF, actualData[3] & 0xFF);
                 System.err.println("ExcelProcessor: " + errorMsg);
                 throw new IOException(errorMsg);
             }
@@ -237,7 +236,6 @@ public class ExcelProcessor {
                     return cell.getCellFormula();
                 }
             case BLANK:
-                return "";
             default:
                 return "";
         }
@@ -388,17 +386,12 @@ public class ExcelProcessor {
      * 获取公式单元格的值
      */
     private static String getCellValueAsString(CellType cellType) {
-        switch (cellType) {
-            case NUMERIC:
-                return "数值结果";
-            case STRING:
-                return "文本结果";
-            case BOOLEAN:
-                return "布尔结果";
-            case ERROR:
-                return "错误结果";
-            default:
-                return "";
-        }
+        return switch (cellType) {
+            case NUMERIC -> "数值结果";
+            case STRING -> "文本结果";
+            case BOOLEAN -> "布尔结果";
+            case ERROR -> "错误结果";
+            default -> "";
+        };
     }
 }

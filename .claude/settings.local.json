@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean compile:*)",
+      "Bash(mvn test)",
+      "WebSearch",
+      "Bash(mvn dependency:copy-dependencies:*)",
+      "Bash(mvn package:*)",
+      "Bash(mvn clean package:*)",
+      "Bash(dir:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

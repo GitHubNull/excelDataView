@@ -6,7 +6,7 @@
 
     <groupId>org.oxff</groupId>
     <artifactId>excelDataView</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.2</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -20,20 +20,6 @@
             <groupId>net.portswigger.burp.extender</groupId>
             <artifactId>burp-extender-api</artifactId>
             <version>2.1</version>
-        </dependency>
-
-        <!-- Apache Commons IO - 文件操作工具 -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.14.0</version>
-        </dependency>
-
-        <!-- Apache Commons Lang - 工具类 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
         </dependency>
 
         <!-- Apache POI - Excel处理 -->

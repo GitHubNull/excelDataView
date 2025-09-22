@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **模块化设计**：采用模块化架构，易于扩展
 
 ### 版本信息
-- **当前版本**：1.0.0
+- **当前版本**：1.1.2
 - **Java 版本**：17+
 - **构建工具**：Maven 3.x
 - **许可证**：MIT
@@ -154,12 +154,13 @@ mvn site
 
 ### 核心依赖
 - **burp-extender-api:2.1** - Burp Suite 扩展 API
-- **commons-io:2.14.0** - Apache Commons IO 工具库
-- **commons-lang3:3.18.0** - Apache Commons Lang 工具库
 
 ### Excel 处理
 - **poi:5.2.3** - Apache POI Excel 处理库
 - **poi-ooxml:5.4.0** - Apache POI OOXML 支持
+
+### 依赖优化
+- **2025-09-23**：移除未使用的 commons-io 和 commons-lang3 依赖，减少项目体积
 
 ### 构建插件
 - **maven-compiler-plugin:3.13.0** - Java 编译器
